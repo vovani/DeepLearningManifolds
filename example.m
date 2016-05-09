@@ -14,23 +14,14 @@ plot_projection_on_sphere(margined_mnist5);
 view([60 10]);
 [sh_pic, sh_dirs, proj_indecies] = project_on_sphere(margined_mnist5);
 sh_fourier = directSHT(N, sh_pic, sh_dirs, 'complex');
+ 
+filt_opt = default_filter_options('dyadic', 2 * N);
+filt_opt.Q = 2;
+filt_opt.B = 0.5;
+filt_opt.boundary = 'nonsymm';
+filt_opt.fliter_type = 'gabor_1d';
 
-
-% NOTE:
-%     The filters where created by the following code. Currently I've saved
-%     them to .mat files and loading them, becuase I didn't want to upload 
-%     huge amounts of data (the external packages I've used) to git, since
-%     my connection on the satellite internet is quite slow.
-%
-% 
-% filt_opt = default_filter_options('dyadic', 2 * N);
-% filt_opt.Q = 2;
-% filt_opt.B = 0.5;
-% filt_opt.boundary = 'nonsymm';
-% filt_opt.fliter_type = 'gabor_1d';
-% 
-% filters = morlet_filter_bank_1d(N, filt_opt);
-load filters
+filters = morlet_filter_bank_1d(N, filt_opt);
 
 figure;
 hold on;
