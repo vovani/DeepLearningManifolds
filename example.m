@@ -11,6 +11,8 @@ N = 64;
 load margined_mnist5
 
 plot_projection_on_sphere(margined_mnist5);
+[sh_pic, sh_dirs, proj_indecies] = project_on_sphere(margined_mnist5);
+sh_fourier = directSHT(N, sh_pic, sh_dirs, 'complex');
 
 % NOTE:
 %     The filters where created by the following code. Currently I've saved
@@ -18,8 +20,6 @@ plot_projection_on_sphere(margined_mnist5);
 %     huge amounts of data (the external packages I've used) to git, since
 %     my connection on the satellite internet is quite slow.
 %
-% [sh_pic, sh_dirs, proj_indecies] = project_on_sphere(margined_mnist5);
-% sh_fourier = directSHT(N, sh_pic, sh_dirs, 'complex');
 % 
 % filt_opt = default_filter_options('dyadic', 2 * N);
 % filt_opt.Q = 2;
