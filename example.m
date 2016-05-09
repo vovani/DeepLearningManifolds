@@ -22,9 +22,10 @@ plot_projection_on_sphere(margined_mnist5);
 % sh_fourier = directSHT(N, sh_pic, sh_dirs, 'complex');
 % 
 % filt_opt = default_filter_options('dyadic', 2 * N);
-% filt_opt.Q = 1;
+% filt_opt.Q = 2;
 % filt_opt.B = 0.5;
 % filt_opt.boundary = 'nonsymm';
+% filt_opt.fliter_type = 'gabor_1d';
 % 
 % filters = morlet_filter_bank_1d(N, filt_opt);
 load filters
