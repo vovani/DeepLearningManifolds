@@ -32,20 +32,20 @@ load filters
 figure;
 hold on;
 for i = 1:numel(filters.psi.filter)
-    filter = filters.psi.filter{i};
-    plot([zeros(1, filter.start) filter.coefft.']);
+    filter = realize_filter(filters.psi.filter{i}, N);
+    plot(filter);
 end
 hold off;
 
 for i = 1:numel(filters.psi.filter)
-    filter = filters.psi.filter{i};
+    filter = realize_filter(filters.psi.filter{i}, N);
     sh_filtered = apply_filter(filter, sh_fourier, sh_dirs);
     filtered = sphere_to_grid(size(margined_mnist5), sh_filtered, proj_indecies);
     figure;
     plot_projection_on_sphere(abs(filtered));
 end
 
-filter = filters.phi.filter;
+filter = realize_filter(filters.phi.filter);
 sh_filtered = apply_filter(filter, sh_fourier, sh_dirs);
 filtered = sphere_to_grid(size(margined_mnist5), sh_filtered, proj_indecies);
 figure;
