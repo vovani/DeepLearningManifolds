@@ -11,8 +11,10 @@ N = 64;
 load margined_mnist5
 
 plot_projection_on_sphere(margined_mnist5);
+view([60 10]);
 [sh_pic, sh_dirs, proj_indecies] = project_on_sphere(margined_mnist5);
 sh_fourier = directSHT(N, sh_pic, sh_dirs, 'complex');
+
 
 % NOTE:
 %     The filters where created by the following code. Currently I've saved
@@ -39,15 +41,6 @@ end
 hold off;
 
 for i = 1:numel(filters.psi.filter)
-    filter = realize_filter(filters.psi.filter{i}, N);
-    sh_filtered = apply_filter(filter, sh_fourier, sh_dirs);
-    filtered = sphere_to_grid(size(margined_mnist5), sh_filtered, proj_indecies);
-    figure;
-    plot_projection_on_sphere(abs(filtered));
+    show_results(realize_filter(filters.psi.filter{i}, N), size(margined_mnist5), proj_indecies, sh_fourier, sh_dirs);
 end
-
-filter = realize_filter(filters.phi.filter);
-sh_filtered = apply_filter(filter, sh_fourier, sh_dirs);
-filtered = sphere_to_grid(size(margined_mnist5), sh_filtered, proj_indecies);
-figure;
-plot_projection_on_sphere(abs(filtered));
+show_results(realize_filter(filters.phi.filter), size(margined_mnist5), proj_indecies, sh_fourier, sh_dirs);
