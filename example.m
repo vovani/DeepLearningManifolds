@@ -12,8 +12,10 @@ load margined_mnist5
 
 plot_projection_on_sphere(margined_mnist5);
 view([60 10]);
-[sh_pic, sh_dirs, proj_indecies] = project_on_sphere(margined_mnist5);
-sh_fourier = directSHT(N, sh_pic, sh_dirs, 'complex');
+img = project_on_sphere(margined_mnist5);
+sh_fourier = sh_image(img.dirs, ...
+                      directSHT(N, img.values, img.dirs, 'complex'), ...
+                      img.proj_indecies);
  
 filt_opt = default_filter_options('dyadic', 2 * N);
 filt_opt.Q = 2;
@@ -32,6 +34,6 @@ end
 hold off;
 
 for i = 1:numel(filters.psi.filter)
-    show_results(realize_filter(filters.psi.filter{i}, N), size(margined_mnist5), proj_indecies, sh_fourier, sh_dirs);
+    show_results(realize_filter(filters.psi.filter{i}, N), size(margined_mnist5), sh_fourier);
 end
-show_results(realize_filter(filters.phi.filter), size(margined_mnist5), proj_indecies, sh_fourier, sh_dirs);
+show_results(realize_filter(filters.phi.filter), size(margined_mnist5), sh_fourier);

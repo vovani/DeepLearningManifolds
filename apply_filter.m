@@ -1,9 +1,11 @@
-function [ filtered ] = apply_filter( filter, sh_fourier, sh_dirs )
+function [ filtered ] = apply_filter( filter, sh_fourier)
 %APPLY_FILTER Summary of this function goes here
 %   Detailed explanation goes here
 
-convolved = sphConvolution(sh_fourier, filter);
-filtered = inverseSHT(convolved, sh_dirs, 'complex');
+convolved = sphConvolution(sh_fourier.values, filter);
+filtered = sh_image(sh_fourier.dirs, ...
+                    inverseSHT(convolved, sh_fourier.dirs, 'complex'), ...
+                    sh_fourier.proj_indecies);
 
 end
 
