@@ -4,8 +4,6 @@ function [ filtered ] = apply_filter( filter, sh_fourier)
 
 convolved = sphConvolution(sh_fourier.values, filter);
 filtered = sh_image(sh_fourier.dirs, ...
-                    inverseSHT(convolved, sh_fourier.dirs, 'complex'), ...
-                    sh_fourier.proj_indecies);
-
+                    inverseSHT(convolved, sh_fourier.dirs, 'complex'));
 end
 

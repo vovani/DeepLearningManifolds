@@ -13,9 +13,9 @@ load margined_mnist5
 plot_projection_on_sphere(margined_mnist5);
 view([60 10]);
 img = project_on_sphere(margined_mnist5);
+img = img.rotate(0, 50);
 sh_fourier = sh_image(img.dirs, ...
-                      directSHT(N, img.values, img.dirs, 'complex'), ...
-                      img.proj_indecies);
+                      directSHT(N, img.values, img.dirs, 'complex'));
  
 filt_opt = default_filter_options('dyadic', 2 * N);
 filt_opt.Q = 2;

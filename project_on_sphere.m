@@ -6,6 +6,6 @@ dirs = grid2dirs(360 / width, 180 / height);
 proj_indecies = round(dirs * diag([(width - 1)/ (2 * pi), (height - 1) / pi])) + 1;
 proj_indecies = sub2ind(size(pic), proj_indecies(:,2), proj_indecies(:,1));
 proj = pic(proj_indecies);
-img = sh_image(dirs, proj, proj_indecies);
+img = sh_image(dirs, proj);
 end
 
