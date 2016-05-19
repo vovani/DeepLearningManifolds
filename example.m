@@ -1,6 +1,8 @@
 add_paths;
 
-N = 64;
+addpath(genpath('.\SphericalUtils'));
+
+N = 32;
 
 % NOTE: The image was created using the following code. 
 % 
@@ -13,9 +15,23 @@ load margined_mnist5
 plot_projection_on_sphere(margined_mnist5);
 view([60 10]);
 img = project_on_sphere(margined_mnist5);
-img = img.rotate(0, 50);
 sh_fourier = sh_image(img.dirs, ...
                       directSHT(N, img.values, img.dirs, 'complex'));
+ 
+
+figure;
+scatter3(img.S(1,:),img.S(2,:),img.S(3,:),15,img.values(:),'filled');
+ colormap(jet);
+colorbar;
+
+ImgRot = img.RandRotate();
+
+figure;
+scatter3(ImgRot.S(1,:),ImgRot.S(2,:),ImgRot.S(3,:),15,ImgRot.values(:),'filled');
+ colormap(jet);
+colorbar;
+
+imgRecon = inverseSHT(sh_fourier.values, sh_fourier.dirs, 'complex');
  
 filt_opt = default_filter_options('dyadic', 2 * N);
 filt_opt.Q = 2;
