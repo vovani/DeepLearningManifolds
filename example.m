@@ -1,7 +1,5 @@
 add_paths;
 
-addpath(genpath('.\SphericalUtils'));
-
 N = 32;
 
 % NOTE: The image was created using the following code. 
@@ -52,4 +50,26 @@ hold off;
 for i = 1:numel(filters.psi.filter)
     show_results(realize_filter(filters.psi.filter{i}, N), size(margined_mnist5), sh_fourier);
 end
+
 show_results(realize_filter(filters.phi.filter), size(margined_mnist5), sh_fourier);
+
+ImgKernel=CreateKernel(realize_filter(filters.psi.filter{1}),img.dirs,1);
+ filtered = sphere_to_grid( size(margined_mnist5), ImgKernel);
+figure;
+plot_projection_on_sphere(abs(filtered));
+view([60 10]);
+
+figure;
+scatter3(ImgKernel.S(1,:),ImgKernel.S(2,:),ImgKernel.S(3,:),15,ImgKernel.values(:),'filled');
+ colormap(jet);
+colorbar;
+
+FilterHightPass=zeros(32,1);
+FilterHightPass(10:20)=1;
+ImgKernel1=CreateKernel(FilterHightPass,img.dirs,1);
+ filtered1 = sphere_to_grid( size(margined_mnist5), ImgKernel1);
+figure;
+plot_projection_on_sphere(abs(filtered1));
+view([60 10]);
+
+    
