@@ -1,7 +1,5 @@
 add_paths;
 
-addpath(genpath('.\SphericalUtils'));
-
 N = 32;
 
 % NOTE: The image was created using the following code. 
@@ -34,20 +32,24 @@ colorbar;
 imgRecon = inverseSHT(sh_fourier.values, sh_fourier.dirs, 'complex');
  
 filt_opt = default_filter_options('dyadic', 2 * N);
-filt_opt.Q = 2;
-filt_opt.B = 0.5;
+filt_opt.Q = [2 1];
 filt_opt.boundary = 'nonsymm';
 filt_opt.fliter_type = 'gabor_1d';
 
-filters = morlet_filter_bank_1d(N, filt_opt);
+filters = filter_bank(N, filt_opt);
 
 figure;
-hold on;
-for i = 1:numel(filters.psi.filter)
-    filter = realize_filter(filters.psi.filter{i}, N);
-    plot(filter);
+for m = 1 : numel(filters)
+    subplot(1, 2, m);
+    hold on;
+    for i = 1:numel(filters{m}.psi.filter)
+        filter = realize_filter(filters{m}.psi.filter{i}, N);
+        plot(filter);
+    end
+    hold off;
 end
-hold off;
+
+[U, S] = scat( filters, N, sh_fourier );
 
 for i = 1:numel(filters.psi.filter)
     show_results(realize_filter(filters.psi.filter{i}, N), size(margined_mnist5), sh_fourier);
