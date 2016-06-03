@@ -1,4 +1,4 @@
-function [ U, S ] = scat( filters, N, img )
+function [ U, S ] = scat2( filters, N, img )
     U{1}.signal{1} = img.values;
     U{1}.bw = [0];
     for m = 1 : numel(filters)

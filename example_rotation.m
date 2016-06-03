@@ -37,7 +37,7 @@ parfor i = 1 : 4
         band(i, j) = sum(abs(sh_fourier{i}.values(start : start - 1 + bands(j))) .^ 2);
         start = start + bands(j);
     end
-    [U{i}, S{i}] = scat(filters, N, sh_fourier{i});
+    [U{i}, S{i}] = scat2(filters, N, sh_fourier{i});
 end
 
 color = ['*', 'g', 'b', 'y'];
