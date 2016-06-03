@@ -1,6 +1,10 @@
 function [ U, S ] = scat2( filters, N, img )
     U{1}.signal{1} = img.values;
     U{1}.bw = [0];
+    
+    Y = getSH(N, img.dirs, 'complex');
+    Npoints = size(img.dirs,1);
+    
     for m = 1 : numel(filters)
         layers_filters = filters{m};
         num_filters = numel(layers_filters.psi.filter);
@@ -13,8 +17,8 @@ function [ U, S ] = scat2( filters, N, img )
                     filtered = sphConvolution(U{m}.signal{j}, realize_filter(filter));
                     S{m}(idx) = sum(abs(filtered).^2);
                     if m ~= num_filters
-                        ifiltered = abs(inverseSHT(filtered, img.dirs, 'complex'));
-                        U{m + 1}.signal{idx} = directSHT(N, ifiltered, img.dirs, 'complex');
+                        ifiltered = abs(Y * filtered);
+                        U{m + 1}.signal{idx} = (4*pi/Npoints) * Y' * ifiltered;
                     end
                 end
             end
