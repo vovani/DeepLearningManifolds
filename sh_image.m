@@ -17,17 +17,16 @@ classdef sh_image
          
         end
         
-        function new_obj = rotate(obj, alpa, betta,gamma)
-                new_obj=obj;
-                q=compose_rotation(alpa, betta,gamma);
-                new_obj.values=RotateSphrImg(new_obj.values,new_obj.S,q)  ;
-        end
-        
-        function new_obj = RandRotate(obj)
-             alpa = 2*pi*rand() - pi ;% -180 to 180
-             betta = pi*rand() - pi*0.5; % -90 to 90
-             gamma = 2*pi*rand() - pi; % -180 to 180
-            new_obj = rotate(obj, alpa, betta,gamma);
+        function new_obj = rotate(obj, alpha, beta, gamma)
+            R = euler2rotationMatrix(alpha, beta, gamma, 'zyx');
+            new_obj=obj;
+            [U(:,1), U(:,2), U(:,3)] = sph2cart(new_obj.dirs(:,1), new_obj.dirs(:,2) - pi/2,1);
+            U_rot = U * R.';
+            [new_obj.dirs(:,1),new_obj.dirs(:,2)] = cart2sph(U_rot(:,1), U_rot(:,2), U_rot(:,3));
+            azi = new_obj.dirs(:, 1);
+            azi(azi < 0) = azi(azi < 0) + 2*pi;
+            new_obj.dirs(:, 1) = azi;
+            new_obj.dirs(:, 2) = pi/2 + new_obj.dirs(:, 2);
         end
     end
     
