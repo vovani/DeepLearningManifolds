@@ -30,7 +30,7 @@ filt_opt.boundary = 'nonsymm';
 filt_opt.fliter_type = 'gabor_1d';
 filters = filter_bank(N + 1, filt_opt);
 
-for i = 1 : 4 
+parfor i = 1 : 4 
     sh_fourier{i} = sh_image(img(i).dirs, directSHT(N, img(i).values, img(i).dirs, 'complex'));
     start = 1;
     for j = 1:(N+1)
