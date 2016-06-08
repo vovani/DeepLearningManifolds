@@ -1,3 +1,6 @@
 results/
 MNIST/train-images.idx3-ubyte
 MNIST/train-labels.idx1-ubyte
+*.idx3-ubyte
+*.idx1-ubyte
+*.asv
