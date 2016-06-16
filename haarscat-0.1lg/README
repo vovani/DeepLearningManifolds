@@ -1,0 +1,123 @@
+HaarScat is a MATLAB toolbox for Haar scattering networks.
+
+See our homepage for the details of the project: http://www.di.ens.fr/data/scattering/haar/
+
+Table of Contents
+=================
+
+- Installation
+- Usage
+- Demos
+- Additional Info
+
+Installation
+============
+
+In MATLAB, type `make_wmatch'.
+
+On Unix/Linux systems, pre-built binary files are already in the directory `./max_wmatch_matlab'.
+We provide binary files only for 64bit MATLAB.
+
+Usage
+=====
+
+matlab >> [s, meta] = haar_scat(x, perm_vec, options)
+
+		  Input:
+	      	 x - A d*N array. Each column is a data sample.
+		     perm_vec - Permutation vector.
+		     options - M: Computation up to the scattering order M.
+       				 - J: Largest scale.
+  		  Output:
+  		     s - Scattering coefficients, an array of size n_grp * n_path * N, where
+     			 n_grp = floor(d/2^J), n_path = \sum_0^M \binom{J}{M}. It is a 2D
+            	 array if either n_grp or n_path is 1.
+             meta - m: n_path*1 array, giving the scattering order of each coefficient.
+		          - path: n_path*J array, each row is a scattering path corresponding 
+             		      to each coefficient.
+             		     
+matlab >> perm_vec = haar_tree_learn(x, options)
+
+		  Input:
+          	 x - A d*N array. Each col is a data sample.
+			 options - pnorm: the norm used to compute the distance.
+          			 - J: the largest scale.
+		  Output:
+			 perm_vec - Permutation vector, indicating the binary tree structure
+              			learnt from pairing, up to a "left/right" switch at each 
+			            bifurcation.
+			            
+matlab >> perm_vec = haar_tree_2d_image_grid(dim1, dim2, options)
+
+		  Input:
+		  	 dim1, dim2 - the dimension of an image grid
+			 options - direction: the direction of the initial pairing,
+                      'h' (horizontal) or 'v' (vertical).
+          Output:
+		     perm_vec - Permutation vector, indicating the binary tree structure
+          			    from a 2d image grid.
+          			    
+matlab >> [s, meta]  = haar_scat_2d_image_grid_multishift(x, N_shift, options)
+
+ 		  Input:
+		     x - A dim1*dim2*N 3D array. N sample images.
+		     N_shift - Number of shifts.
+		     options - M: Computation up to the scattering order M.
+          			 - J: Largest scale.
+		  Output:
+		     s - Averaged scattering coefficients, an array of size n_grp * n_path * N, where
+          		 n_grp = floor(d/2^J), n_path = \sum_0^M \binom{J}{M}. It is a 2D
+	             array if either n_grp or n_path is 1.
+		     meta - m: n_path*1 array, giving the scattering order of each coefficient.
+		          - path: n_path*J array, each row is a scattering path corresponding 
+          			      to each coefficient.
+          			      
+Demos
+=====
+
+We provide demos for performing classifications on MNIST and CIFAR-10 using Haar scattering
+with known image geometry: `demo_mnist_2d_image_grid.m' and `demo_cifar10_2d_image_grid.m'.
+
+We also provide classification demos using learnt Haar scattering on scrambled MNIST,
+scrambled CIFAR-10 and MNIST projected on a 3D sphere: `demo_mnist_learn.m', 
+`demo_cifar10_learn.m' and `demo_mnist_sphere_learn.m'.
+
+The data sets are available from the following links:
+MNIST: http://yann.lecun.com/exdb/mnist/
+CIFAR: http://www.cs.toronto.edu/~kriz/cifar.html
+
+Note that the classification step requires the LIBSVM library. 
+(See http://www.csie.ntu.edu.tw/~cjlin/libsvm/)
+On Unix/Linux systems, pre-built binary files for 64bit MATLAB are already in the directory 
+`./classification'. In order to distinguish LIBSVM functions from the SVM functions in 
+MATLAB Statistics Toolbox, we changed the function names 'svmtrain' and 'svmpredict' to 
+'libsvmtrain' and 'libsvmpredict'.
+
+Additional Info
+===============
+
+For any questions and comments, please contact:
+Mia Xu Chen, xuchen@princeton.edu
+Xiuyuan Cheng, xiuyuan.cheng@ens.fr
+
+Acknowledgments:
+This work was supported by the ERC grant InvariantClass 320959.
+Many thanks to Stéphane Mallat and our group members and users for many
+helpful discussions and comments.
+
+
+
+
+
+
+
+
+
+
+
+
+			            
+			            
+			            
+			            
+			            
