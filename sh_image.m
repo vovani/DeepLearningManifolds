@@ -27,6 +27,9 @@ classdef sh_image
             azi(azi < 0) = azi(azi < 0) + 2*pi;
             new_obj.dirs(:, 1) = azi;
             new_obj.dirs(:, 2) = pi/2 + new_obj.dirs(:, 2);
+            
+            [new_obj.S(1,:),new_obj.S(2,:),new_obj.S(3,:)]=...
+                sph2cart(new_obj.dirs(:,2), new_obj.dirs(:,1),ones(size(new_obj.dirs,1),1)); 
         end
     end
     
