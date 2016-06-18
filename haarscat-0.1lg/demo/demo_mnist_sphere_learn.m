@@ -9,10 +9,10 @@
 % ----------------------------------------------------------------------------%
 
 clear; close all;
-
-addpath('C:\dev\ManifoldLearining\DeepLearningManifolds\scatnet\utils');
-addpath('C:\dev\ManifoldLearining\libsvm-compact-0.1\matlab');
-addpath(genpath('C:\dev\ManifoldLearining\haarscat-0.1lg'));
+addpath('C:\dev\DeepLearningManifolds');
+addpath('C:\dev\DeepLearningManifolds\scatnet\utils');
+addpath('C:\dev\DeepLearningManifolds\libsvm-compact-0.1\matlab');
+addpath(genpath('C:\dev\DeepLearningManifolds\haarscat-0.1lg\'));
 %addpath('C:\dev\Matlab_code\ML\SVM\Libsvm\libsvm-compact-0.1\libsvm-compact-0.1\matlab');
 %% Load MNIST data set and project to 3D sphere
 
@@ -99,6 +99,7 @@ Feat_Tr = Feat_all(:, 1:NTr);
 Feat_Te = Feat_all(:, NTr+1 : NTr+NTe);
 
 save('HaarFeatures_data4svm.mat','Feat_Tr', 'TrainLabel', 'Feat_Te', 'TestLabel', 'params','-v7.3');
+load HaarFeatures_data4svm
 acc = svm_rbf((Feat_Tr'), TrainLabel, (Feat_Te'), TestLabel, params);
 
 % Uncomment the following line to perform exponential-grid cross validation
