@@ -4,3 +4,4 @@ MNIST/train-labels.idx1-ubyte
 *.idx3-ubyte
 *.idx1-ubyte
 *.asv
+*.bak

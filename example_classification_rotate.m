@@ -87,19 +87,19 @@ disp('load ProjectedMNISTtest');
 
 num_test_images=length(test_labels);
 
-% disp('Calculate Scat monets for testing data')
-% Sts = ScatSphericalMomonets( test_imgs,filters,Y );
-% save('mnist_test_features','Sts');
+disp('Calculate Scat monets for testing data')
+ featuresTs = ScatSphericalMomonets( test_imgs,filters,Y );
+ save('mnist_test_features','featuresTs');
 % disp('load mnist_test_features');
 % load mnist_test_features;
-% featuresTs = cell2mat(cellfun(@(X)cell2mat(X),Sts,'UniformOutput', false)'); 
+
 
 % 
 % %featuresTs=sqrt(featuresTs);
-% disp('predict for testing data');
-% PredTs=RFpredict(model, featuresTs);
-% ErrPred=error(model,featuresTs,test_labels);
-% accPred=mean(PredTs == test_labels(1:num_test_images));
+ disp('predict for testing data');
+PredTs=RFpredict(model, featuresTs);
+ ErrPred=error(model,featuresTs,test_labels);
+ accPred=mean(PredTs == test_labels(1:num_test_images));
 disp('OOB error(out-of-the-bag');
 oobErr=oobError(model);
 
@@ -122,13 +122,12 @@ title('Features importance');
 %  load ProjectedMNISTtestRot
 % 
 disp('Calc of scat moments for ror ts images')
-[Sts_rot,metaTs_rot,Uts_rot,sh_fourierTs_rot] = ...
+[featuresTs_rot,metaTs_rot,Uts_rot,sh_fourierTs_rot] = ...
     ScatSphericalMomonets( test_imgs_rot,filters,Y );
 % S,U, sh_fourier,meta 
 disp('save mnist_test_Rot_features_all');
- save('mnist_test_Rot_features_all','Sts_rot','Uts_rot','sh_fourierTs_rot','metaTs_rot','-v7.3');
+ save('mnist_test_Rot_features_all','featuresTs_rot','Uts_rot','sh_fourierTs_rot','metaTs_rot','-v7.3');
 %load mnist_test_Rot_features Sts_rot
-featuresTs_rot =  cell2mat(cellfun(@(X)cell2mat(X),Sts_rot,'UniformOutput', false)');
 
 disp('predict Rot test');
 PredTs_rot=RFpredict(model, featuresTs_rot);
