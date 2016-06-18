@@ -2,9 +2,9 @@ clear;
 close all;
 add_paths;
 
-addpath('C:\Data\MNIST');
-
-% disp('Load Raw mnist data');
+%addpath('C:\Data\MNIST');
+ add_paths;
+disp('Load Raw mnist data');
  raw_train_images = loadMNISTImages('train-images.idx3-ubyte');
  train_labels = loadMNISTLabels('train-labels.idx1-ubyte');
  raw_test_images = loadMNISTImages('t10k-images.idx3-ubyte');
