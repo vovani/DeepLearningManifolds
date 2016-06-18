@@ -15,9 +15,11 @@ function [ U, S,meta ] = scat2( filters, Y, img )
                 if U{m}.bw(j) <= U{m + 1}.bw(i)
                     filtered = sphConvolution(U{m}.signal{j}, realize_filter(filter));
                     S{m}(idx) = sum(abs(filtered).^2);
-                    meta{m,idx}.m=m;
-                    meta{m,idx}.psi_scale=i;
-                    meta{m,idx}.prev_scale=j;
+                    if nargout > 2
+                        meta{m}(idx).m=m;
+                        meta{m}(idx).psi_scale=i;
+                        meta{m}(idx).prev_scale=j;
+                    end
                     if m ~= num_filters
                         f = Y' * abs(Y * filtered);
                         U{m + 1}.signal{idx} = (4*pi/Npoints) .* f;
