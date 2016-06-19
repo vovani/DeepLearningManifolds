@@ -7,6 +7,14 @@ function [ features,meta,U, sh_fourier ] = ScatSphericalMomonets( Imgs,filters,S
  else
      isFullOut=false;
  end
+ OneImg=false;
+ if ~iscell(Imgs)
+     OneImg=true;
+     tempImg=Imgs;
+     clear Imgs
+     Imgs{1}=tempImg;
+     clear tempImg;
+ end
 num_images=length(Imgs);
 Npoints = size(Imgs{1}.dirs, 1);
 
@@ -17,14 +25,27 @@ if isFullOut
 end
 %meta=cell(1, num_images);
 
-parfor i = 1:num_images 
-    
-     sh_fourier{i} = sh_image(Imgs{i}.dirs, (4 * pi / Npoints) * SHbaisis' * Imgs{i}.values); 
-    if isFullOut  
-        [U{i}, S{i}] = scat2(filters, SHbaisis, sh_fourier{i});
-    else 
-        [~, S{i}] = scat2(filters, SHbaisis, sh_fourier{i});
-        sh_fourier{i}=[];
+if OneImg
+    for i = 1:num_images 
+
+         sh_fourier{i} = sh_image(Imgs{i}.dirs, (4 * pi / Npoints) * SHbaisis' * Imgs{i}.values); 
+        if isFullOut  
+            [U{i}, S{i}] = scat2(filters, SHbaisis, sh_fourier{i});
+        else 
+            [~, S{i}] = scat2(filters, SHbaisis, sh_fourier{i});
+            sh_fourier{i}=[];
+        end
+    end
+else
+    parfor i = 1:num_images 
+
+         sh_fourier{i} = sh_image(Imgs{i}.dirs, (4 * pi / Npoints) * SHbaisis' * Imgs{i}.values); 
+        if isFullOut  
+            [U{i}, S{i}] = scat2(filters, SHbaisis, sh_fourier{i});
+        else 
+            [~, S{i}] = scat2(filters, SHbaisis, sh_fourier{i});
+            sh_fourier{i}=[];
+        end
     end
 end
 sh_fourier1 = sh_image(Imgs{1}.dirs, (4 * pi / Npoints) * SHbaisis' * Imgs{1}.values); 
@@ -41,5 +62,10 @@ clear meta;
 meta.m=m;
 meta.psi_scale=psi_scale;
 meta.prev_scale=prev_scale;
+
+if OneImg
+    U=U{1};
+    sh_fourier=sh_fourier{1};
+end
 end
 
