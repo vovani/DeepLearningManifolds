@@ -17,8 +17,8 @@ test_labels = loadMNISTLabels('t10k-labels.idx1-ubyte');
  num_test_images = size(raw_test_images, 2);
 
 N = 32;
-
-train_img = project_on_sphere_MNIST( raw_train_images );
+RandomSample=true;
+train_img = project_on_sphere_MNIST( raw_train_images,RandomSample );
 
 save('ProjectedMNISTtrain','train_img','train_labels','-v7.3');
 %  disp('Load ProjectedMNISTtrain');
@@ -79,7 +79,7 @@ disp('Save RFmodelALL');
 %load RFmodelALL
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%TESTING%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 disp('Project test images on sphere')
-test_imgs =  project_on_sphere_MNIST( raw_test_images );
+test_imgs =  project_on_sphere_MNIST( raw_test_images,RandomSample );
 
 save('ProjectedMNISTtest','test_imgs','test_labels','-v7.3');
 disp('load ProjectedMNISTtest');
@@ -89,7 +89,7 @@ num_test_images=length(test_labels);
 
 disp('Calculate Scat monets for testing data')
  featuresTs = ScatSphericalMomonets( test_imgs,filters,Y );
- save('mnist_test_features','featuresTs');
+ save('mnist_test_features_rand','featuresTs');
 % disp('load mnist_test_features');
 % load mnist_test_features;
 
@@ -117,17 +117,17 @@ title('Features importance');
  parfor i = 1:num_test_images  
      test_imgs_rot{i} = test_imgs{i}.rand_rotate();
  end
- save('ProjectedMNISTtestRot','test_imgs_rot','test_labels','-v7.3');
+ save('ProjectedMNISTtestRotRand','test_imgs_rot','test_labels','-v7.3');
 % disp('load ProjectedMNISTtestRot');
-%  load ProjectedMNISTtestRot
+%  load ProjectedMNISTtestRotRand
 % 
 disp('Calc of scat moments for ror ts images')
 [featuresTs_rot,metaTs_rot,Uts_rot,sh_fourierTs_rot] = ...
     ScatSphericalMomonets( test_imgs_rot,filters,Y );
 % S,U, sh_fourier,meta 
 disp('save mnist_test_Rot_features_all');
- save('mnist_test_Rot_features_all','featuresTs_rot','Uts_rot','sh_fourierTs_rot','metaTs_rot','-v7.3');
-%load mnist_test_Rot_features Sts_rot
+ save('mnist_test_Rot_features_Rand','featuresTs_rot','Uts_rot','sh_fourierTs_rot','metaTs_rot','-v7.3');
+%load mnist_test_Rot_features_Rand Sts_rot
 
 disp('predict Rot test');
 PredTs_rot=RFpredict(model, featuresTs_rot);

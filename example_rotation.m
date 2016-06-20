@@ -4,13 +4,14 @@ add_paths;
 add_paths
 mnist = loadMNISTImages('train-images.idx3-ubyte');
 train_labels = loadMNISTLabels('train-labels.idx1-ubyte');
-mnist5 = padarray(reshape(mnist(:,1), 28, 28), [18 18]);
+mnist5=padarray(reshape(mnist(:,1), 28, 28), [18 18]);
+%mnist5 = imresize(mnist5,2);
 sizes = size(mnist5);
-N = 32;
+N = round(mean(sizes)/2);
 
 simplImg=zeros([128 128]);
 simplImg(48:80, 48:80)=1;
-mnist_shpere = project_on_sphere(mnist5);
+mnist_shpere = project_on_sphere(mnist5,true);
     alpha=2*pi*rand();
     beta=pi*rand();
     gamma=2*pi*rand();
@@ -72,7 +73,7 @@ originSH = getSH(N, mnist_shpere.dirs, 'complex');
 
 RotSH = getSH(N, ImgRot.dirs, 'complex');
 [ features_rot,meta_rot,U_rot,fourier_rot] =...
-    ScatSphericalMomonets( ImgRot,filters,RotSH );
+    ScatSphericalMomonets( ImgRot,filters,originSH );
 
 Rot1SH = getSH(N, ImgRot1.dirs, 'complex');
 [ features_rot1,meta_rot1,U_rot1,fourier_rot1] =...
