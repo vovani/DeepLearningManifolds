@@ -1,0 +1,37 @@
+Disclaimer: the following description was obtained  by inspection of the
+code and some simple tests.  It was not written by the implementor.  CCM
+
+-------------------------------------------------------------------------
+INPUT FORMAT FOR WMATCH:
+-------------------------------------------------------------------------
+   Graph I/O is performed by a generic graph library package, 
+   so some of the fields are ignored by the "wmatch" code (but 
+   you must include dummy fields in the input). 
+
+   There are three types of lines: the first line, vertex lines, 
+   and edge lines. The fields in each line type are as follows. 
+
+   First line-> size edges U
+      size: integer giving number of vertices
+      edges: integer giving number of edges 
+      U: character ``U'' or ``u'' specifying an undirected graph
+
+   Vertex lines->  degree vlabel xcoord ycoord
+      degree: edge degree of the vertex
+      vlabel: vertex label (ignored--vertices are referred to by index)
+      xcoord: integer x-coordinate location (ignored)
+      ycoord: integer y-coordinate location (ignored) 
+
+      *****Each vertex line is followed immediately by the lines 
+      for all its adjacent edges (thus each edge appears twice, 
+      once for each vertex).******
+
+   Edge lines-> adjacent  weight
+      adjacent: index (not vlabel) of the adjacent vertex
+      weight: integer edge weight 
+     
+
+
+
+
+

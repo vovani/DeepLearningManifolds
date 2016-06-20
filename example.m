@@ -4,10 +4,11 @@ N = 32;
 
 % NOTE: The image was created using the following code. 
 % 
-% minst5 = loadMNISTImages('train-images.idx3-ubyte');
+%  minst5 = loadMNISTImages('train-images.idx3-ubyte');
 % minst5 = reshape(minst5(:,1), 28, 28);
 % margined_mnist5 = zeros(N, N);
 % margined_mnist5(13 : 40, 13 : 40) = minst5;
+% save margined_mnist5 margined_mnist5
 load margined_mnist5
 
 plot_projection_on_sphere(margined_mnist5);
@@ -22,12 +23,12 @@ scatter3(img.S(1,:),img.S(2,:),img.S(3,:),15,img.values(:),'filled');
  colormap(jet);
 colorbar;
 
-ImgRot = img.RandRotate();
-
-figure;
-scatter3(ImgRot.S(1,:),ImgRot.S(2,:),ImgRot.S(3,:),15,ImgRot.values(:),'filled');
- colormap(jet);
-colorbar;
+% ImgRot = img.RandRotate();
+% 
+% figure;
+% scatter3(ImgRot.S(1,:),ImgRot.S(2,:),ImgRot.S(3,:),15,ImgRot.values(:),'filled');
+%  colormap(jet);
+% colorbar;
 
 imgRecon = inverseSHT(sh_fourier.values, sh_fourier.dirs, 'complex');
  

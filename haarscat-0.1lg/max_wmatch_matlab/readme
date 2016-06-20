@@ -1,0 +1,53 @@
+-------------------------------------------------------------------
+The Match_C.shell file contains a program, written in C, for finding 
+MAXIMUM-WEIGHT MATCHING for UNDIRECTED graphs.  
+-------------------------------------------------------------------
+
+This program was written by Ed Rothberg to implement H. Gabow's N-cubed 
+weighted matching algorithm, as described in his Ph.D. thesis 
+"Implementation of Algorithms for Maximum Matching on Nonbipartite Graphs" 
+Stanford University, 1973.  
+
+
+MAIN PROGRAMS:
+		- wmatch
+
+REQUIRED FILES:
+		README input.form output.form makefile graphtypes.h glib.c pairs.c
+		term.c pointer.c readgraph.c unpairs.c match.defs wmatch.c main.c
+
+TO GET THESE FILES:
+        Run the "match_c.shell" file in the /bin/sh shell. 
+		(It will unwrap itself.)
+		Or copy the files themselves.
+
+HOW TO MAKE THE PROBLEM-SOLVERS:
+
+		wmatch:  Solves maximum matching for undirected graphs 
+			presented in an adjacency-list format. 
+
+		  Requires:graphtypes.h glib.c pairs.c term.c pointer.c 
+		   readgraph.c unpairs.c match.defs wmatch.c main.c makefile 
+ 		
+		       To compile: $make
+		       To invoke: $wmatch input_file >output_file
+		
+		      If no filename is given, a small help message 
+                      appears. It always  writes to standard out.  
+
+FILE DESCRIPTIONS: 
+		input.form:  Describes the input formats for match.
+		output.form: Describes output formats for match.
+		test.in:  A sample input for wmatch
+	
+                edge_to_wm:  A shell file which converts files in DIMACS 
+                      .edge format to one compatible with wmatch.  It
+                      uses the following awk files. 
+                                  double.a
+                                  strip.a 
+
+                       Usage:  $edge_to_wm  input.edge output.wm 
+      		
+               The others are source code files written in C language.
+
+
