@@ -2,17 +2,18 @@ clear;
 close all;
 add_paths;
 
-raw_train_images = loadMNISTImages('train-images.idx3-ubyte');
-train_labels = loadMNISTLabels('train-labels.idx1-ubyte');
-raw_test_images = loadMNISTImages('t10k-images.idx3-ubyte');
-test_labels = loadMNISTLabels('t10k-labels.idx1-ubyte');
+raw_train_images = loadMNISTImages('train-images-idx3-ubyte');
+train_labels = loadMNISTLabels('train-labels-idx1-ubyte');
+raw_test_images = loadMNISTImages('t10k-images-idx3-ubyte');
+test_labels = loadMNISTLabels('t10k-labels-idx1-ubyte');
 
 test_labels(test_labels == 9) = 6;
 train_labels(train_labels == 9) = 6;
 
-num_train_images = size(raw_train_images, 2);
-num_test_images = size(raw_test_images, 2);
-
+% num_train_images = size(raw_train_images, 2);
+% num_test_images = size(raw_test_images, 2);
+num_train_images = 10;
+num_test_images = 10;
 N = 32;
 
 train_img = cell(1, num_train_images);

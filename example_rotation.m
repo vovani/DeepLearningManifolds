@@ -2,9 +2,9 @@ clear;
 close all;
 add_paths;
 
-mnist = loadMNISTImages('train-images.idx3-ubyte');
-mnist5 = padarray(reshape(mnist(:,4), 28, 28), [18 18]);
-N = 32;
+mnist = loadMNISTImages('train-images-idx3-ubyte');
+mnist5 = padarray(reshape(mnist(:,1), 28, 28), [18 18]);
+N = 64;
 
 pic = mnist5;
 sizes = size(pic);
@@ -18,26 +18,23 @@ for i = 1:4
     plot_sph(img(i), sizes);
 end
 
-bands = 2 * (0:32) + 1;
 band = zeros(4, N + 1);
 sh_fourier = cell(1, 4);
 U = cell(4);
 S = cell(4);
 
-filt_opt = default_filter_options('dyadic', 2 * N);
-filt_opt.Q = [2 1];
+filt_opt = default_filter_options('fdyadic', N);
+filt_opt.Q = [8 1];
 filt_opt.boundary = 'nonsymm';
 filt_opt.fliter_type = 'gabor_1d';
 filters = filter_bank(N + 1, filt_opt);
 
-parfor i = 1 : 4 
-    sh_fourier{i} = sh_image(img(i).dirs, directSHT(N, img(i).values, img(i).dirs, 'complex'));
-    start = 1;
-    for j = 1:(N+1)
-        band(i, j) = sum(abs(sh_fourier{i}.values(start : start - 1 + bands(j))) .^ 2);
-        start = start + bands(j);
-    end
-    [U{i}, S{i}] = scat2(filters, N, sh_fourier{i});
+for i = 1 : 1
+    Y = getSH(N - 1, img(i).dirs, 'complex');
+    invY = pinv(Y);
+    sh_fourier{i} = sh_image(img(i).dirs, invY * img(i).values);
+    band(i, :) = band_energy(N, sh_fourier{i}.values);
+%     [U{i}, S{i}] = scat2(filters, Y, invY, sh_fourier{i});
 end
 
 color = ['*', 'g', 'b', 'y'];
