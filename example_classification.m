@@ -2,8 +2,8 @@ clear;
 close all;
 add_paths;
 
-num_train_images = 100000 ;
-num_test_images = 100000 ;
+num_train_images = 3 ;
+num_test_images = 3 ;
 
 N = 64;
 [theta, phi] = nsht_sampling_points(N);
