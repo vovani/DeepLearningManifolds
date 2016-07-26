@@ -2,50 +2,45 @@ clear;
 close all;
 add_paths;
 
-raw_train_images = loadMNISTImages('train-images-idx3-ubyte');
-train_labels = loadMNISTLabels('train-labels-idx1-ubyte');
-raw_test_images = loadMNISTImages('t10k-images-idx3-ubyte');
-test_labels = loadMNISTLabels('t10k-labels-idx1-ubyte');
+num_train_images = 100000 ;
+num_test_images = 100000 ;
 
-test_labels(test_labels == 9) = 6;
-train_labels(train_labels == 9) = 6;
+N = 64;
+[theta, phi] = nsht_sampling_points(N);
 
-% num_train_images = size(raw_train_images, 2);
-% num_test_images = size(raw_test_images, 2);
-num_train_images = 10;
-num_test_images = 10;
-N = 32;
-
-train_img = cell(1, num_train_images);
-parfor i = 1:num_train_images
-    train_img{i} = project_on_sphere(padarray(reshape(raw_train_images(:,i), 28, 28), [18 18]));
+for i = 0:N-1
+    theta_indecies(i^2 +1: (i+1)^2) = i + 1;
 end
 
-sh_fourier = cell(1, num_train_images);
-U = cell(1, num_train_images);
-S = cell(1, num_train_images);
+theta = theta(theta_indecies);
+dirs = [phi; theta]';
+S=zeros(3,size(dirs,1));
+[S(1,:),S(2,:),S(3,:)]=sph2cart(dirs(:,1), dirs(:,2) - pi/2,ones(size(dirs,1),1)); 
+ 
+train_options.mode='mild';
+test_options.mode='uniform';
+[Xtr, Ctr, ~, ~] = read_mnist_sphere('.', S,train_options);
+[~, ~, Xte, Cte] = read_mnist_sphere('.', S,test_options);
 
-filt_opt = default_filter_options('dyadic', 2 * N);
-filt_opt.Q = [2 1];
-filt_opt.boundary = 'nonsymm';
-filt_opt.fliter_type = 'gabor_1d';
-filters = filter_bank(N + 1, filt_opt);
-
-Y = getSH(N, train_img{1}.dirs, 'complex');
-Npoints = size(train_img{1}.dirs, 1);
-
-parfor i = 1 : num_train_images
-    sh_fourier{i} = sh_image(train_img{i}.dirs, (4 * pi / Npoints) * Y' * train_img{i}.values);
-    [U{i}, S{i}] = scat2(filters, Y, sh_fourier{i});
+% save SphericalMNIStuniform_nshtGrid2.mat Xtr Ctr Xte Cte -v7.3;
+ 
+s_tr = cellfun(@(c) min( num_train_images, size(c,2)), Xtr);
+train_labels = arrayfun(@(x, i) i*ones(1,x), s_tr', 1:length(Xtr), 'UniformOutput', false);
+train_labels = cell2mat(train_labels);
+train_labels = train_labels(:);
+features = cell(1, length(Xtr));
+parfor i = 1 : length(Xtr)
+    digits = Xtr{i};
+    for img = 1 : min( num_train_images, size(digits,2) )
+        features{i}(img, :) = band_energy(N - 1, nsht_forward(digits(:, img)', N));
+    end
 end
+features = cell2mat(features.');
 
-save mnist_train_features S
+save mnist_train_features features -v7.3
 
-features = zeros(numel(S), 47);
-for i = 1:numel(S)
-    features(i,:) = [S{i}{1} S{i}{2}];
-end
-
+disp('Load data');
+load mnist_train_features
 nTrees = 300; 
 FBoot=0.75;%=1.0
 paroptions = statset('UseParallel',true);%, 'Streams',RandStream.getGlobalStream()
@@ -61,16 +56,53 @@ RFModelMethod = @(X,Y)((TreeBagger(nTrees,X,Y,TreeBagggerClasifParams{:})));
 %Prediction
 RFpredict=@(Model,X)(str2double(Model.predict(X)));
 
-model= RFModelMethod(features, train_labels(1:numel(S)));
+disp('prediction')
+model= RFModelMethod(features, train_labels);
 
-test_imgs = cell(1,num_test_images);
-pred = zeros(num_test_images,1);
-parfor i = 1:num_test_images
-    test_imgs{i} = project_on_sphere(padarray(reshape(raw_test_images(:,i), 28, 28), [18 18]));
-    sh_fourier = sh_image(test_imgs{i}.dirs, (4 * pi / Npoints) * Y' * test_imgs{i}.values);
-    [u, s] = scat2(filters, Y, sh_fourier);
-    pred(i) = RFpredict(model, [s{1} s{2}]);
+s_te = cellfun(@(c) min( num_test_images, size(c,2)), Xte);
+test_labels = arrayfun(@(x, i) i*ones(1,x), s_te', 1:length(Xte), 'UniformOutput', false);
+test_labels = cell2mat(test_labels);
+test_labels = test_labels(:);
+featuresTs = cell(1, length(Xte));
+
+parfor i = 1:length(Xte)
+    digits = Xte{i};
+    for img = 1:s_te(i)
+        featuresTs{i}(img,:) = band_energy(N - 1, nsht_forward(digits(:,img)', N));
+    end
 end
+featuresTs = cell2mat(featuresTs.');
 
-fprintf('acc = %f\n', nnz(pred == test_labels(1:num_test_images)) / num_test_images);
+%disp('Save features')
+save mnist_train_features features featuresTs test_labels train_labels model  -v7.3
+
+disp('Classification error'); 
+ErrTs=error(model,featuresTs,test_labels);
+
+test_labels_pred=RFpredict(model,featuresTs);
+%Classification confusion matrix
+[c,order] = confusionmat(test_labels,test_labels_pred);
+
+%plotconfusion(test_labels,test_labels_pred);
+
+
+%Classification error 
+%ErrTr=error(model,features,train_labels);
+
+fprintf('acc = %f\n', 100*(1-ErrTs(end)));
+
+%OOB error(out-of-the-bag)
+oobErr=oobError(model);
+
+figure,
+bar(model.OOBPermutedPredictorDeltaError);
+title('Features importance');
+
+figure,
+plot(oobErr);
+hold on;
+plot(ErrTs);
+hold off;
+legend('out-of-the-bag','Testing Error');
+title('Perfomance');
 
