@@ -13,7 +13,7 @@ classdef sh_image
          obj.dirs = dirs;
          obj.values = values;
          obj.S=zeros(3,size(dirs,1));
-         [obj.S(1,:),obj.S(2,:),obj.S(3,:)]=sph2cart(dirs(:,2), dirs(:,1),ones(size(dirs,1),1));  
+         [obj.S(1,:),obj.S(2,:),obj.S(3,:)]=sph2cart(dirs(:,1), dirs(:,2) - pi/2,ones(size(dirs,1),1));  
          
         end
         
