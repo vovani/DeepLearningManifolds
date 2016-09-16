@@ -26,11 +26,10 @@ void test(size_t L) {
     t.forward(recon1, coeffs_recon.begin());
     t.inverse(coeffs_recon, recon2.begin());
 
-    std::cout << std::endl;
     std::cout << "Forward first error = " << dlm::l2_error(orig, recon1) << std::endl;
     using namespace boost::adaptors;
-    boost::copy(orig | sliced(0,25), std::ostream_iterator<double>(std::cout, ",")); std::cout << std::endl;
-    boost::copy(recon1 | sliced(0, 25), std::ostream_iterator<double>(std::cout, ",")); std::cout << std::endl;
+    boost::copy(orig | sliced(0,10), std::ostream_iterator<double>(std::cout, ",")); std::cout << std::endl;
+    boost::copy(recon1 | sliced(0, 10), std::ostream_iterator<double>(std::cout, ",")); std::cout << std::endl;
     std::cout << "Inverse first error = " << dlm::l2_error(coeffs, coeffs_recon) << std::endl;
     std::cout << "Forward first error = " << dlm::l2_error(recon1, recon2) << std::endl;
 
