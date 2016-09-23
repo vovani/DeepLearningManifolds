@@ -15,65 +15,51 @@
 #include <boost/range/adaptors.hpp>
 #include <boost/range/algorithm.hpp>
 
-extern "C" {
-#include <ssht.h>
-}
+#include "method.h"
 
 namespace ssht {
 
 static constexpr size_t VERBOSE = 0;
 
-template <typename Policy>
+namespace detail {
+
+template <typename Method>
 class Transform {
 public:
-	Transform(size_t L) : m_L(L) {}
+    Transform(size_t L) : L_(L) {}
 
-	size_t num_samples() const { return Policy::num_samples(m_L); }
-	size_t num_coeffs() const { return m_L * m_L; }
+    size_t num_samples() const { return Method::num_samples(L_); }
+    size_t num_coeffs() const { return L_ * L_; }
 
-	template <typename Seq, typename OutputIt>
-	void forward(const Seq& signal, OutputIt out) {
-		if (signal.size() != num_samples()) { throw std::runtime_error("Wrong signal length"); }
-		std::vector<_Complex double> ccoeffs(num_coeffs());
-		Policy::forward(ccoeffs.data(), signal.data(), m_L);
-		auto f = [] (const auto& c) { return *reinterpret_cast<const std::complex<double>*>(&c); };
-		boost::copy(ccoeffs | boost::adaptors::transformed(f), out);
-	}
+    std::vector<std::pair<double, double>> sampling_points() const {
+        return Method::sampling_points(L_);
+    }
 
-	template <typename Seq, typename OutputIt>
-	void inverse(const Seq& coeffs, OutputIt out) {
-		if (coeffs.size() != num_coeffs()) { throw std::runtime_error("Wrong coeffs length"); }
-		std::vector<double> csignal(num_samples());
-		Policy::inverse(csignal.data(), reinterpret_cast<const _Complex double*>(coeffs.data()), m_L);
-		boost::copy(csignal, out);
-	}
+    template <typename Seq, typename OutputIt>
+    void forward(const Seq& signal, OutputIt out) const {
+        if (signal.size() != num_samples()) { throw std::runtime_error("Wrong signal length"); }
+        std::vector<_Complex double> ccoeffs(num_coeffs());
+        Method::forward(ccoeffs.data(), signal.data(), L_);
+        auto f = [] (const auto& c) { return *reinterpret_cast<const std::complex<double>*>(&c); };
+        boost::copy(ccoeffs | boost::adaptors::transformed(f), out);
+    }
+
+    template <typename Seq, typename OutputIt>
+    void inverse(const Seq& coeffs, OutputIt out) const {
+        if (coeffs.size() != num_coeffs()) { throw std::runtime_error("Wrong coeffs length"); }
+        std::vector<double> csignal(num_samples());
+        Method::inverse(csignal.data(), reinterpret_cast<const _Complex double*>(coeffs.data()), L_);
+        boost::copy(csignal, out);
+    }
 
 private:
-	size_t m_L;
+    size_t L_;
 };
 
-struct MWPolicy {
-	static size_t num_samples(size_t L) { return L * ( 2 * L - 1); }
-	static void forward(_Complex double* coeffs, const double* signal, size_t L) {
-		ssht_core_mw_forward_sov_conv_sym_real(coeffs, signal, L, SSHT_DL_TRAPANI, VERBOSE);
-	}
-	static void inverse(double* signal, const _Complex double* coeffs, size_t L) {
-		ssht_core_mw_inverse_sov_sym_real(signal, coeffs, L, SSHT_DL_TRAPANI, VERBOSE);
-	}
-};
+} /* namespace detail */
 
-struct DLPolicy {
-	static size_t num_samples(size_t L) { return 2 * L * ( 2 * L - 1); }
-	static void forward(_Complex double* coeffs, const double* signal, size_t L) {
-		ssht_core_dh_forward_sov_real(coeffs, signal, L, VERBOSE);
-	}
-	static void inverse(double* signal, const _Complex double* coeffs, size_t L) {
-		ssht_core_dh_inverse_sov_real(signal, coeffs, L, VERBOSE);
-	}
-};
-
-using MWTransform = Transform<MWPolicy>;
-using DLTransform = Transform<DLPolicy>;
+typedef detail::Transform<detail::MWMethod> MWTransform;
+typedef detail::Transform<detail::DHMethod> DHTransform;
 
 } /* namespace ssht */
 
