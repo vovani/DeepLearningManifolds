@@ -22,8 +22,8 @@ struct MWMethod {
 
     static std::vector<std::pair<double, double>> sampling_points(size_t L) {
         std::vector<std::pair<double, double>> rv;
-        for(size_t theta = 0; theta <= ssht_sampling_mw_ntheta(L); ++theta) {
-            for(size_t phi = 0; phi <= ssht_sampling_mw_nphi(L); ++phi) {
+        for(int theta = 0; theta < ssht_sampling_mw_ntheta(L); ++theta) {
+            for(int phi = 0; phi < ssht_sampling_mw_nphi(L); ++phi) {
                 rv.push_back({ssht_sampling_mw_t2theta(theta, L), ssht_sampling_mw_p2phi(phi, L)});
             }
         }
@@ -43,8 +43,8 @@ struct DHMethod {
 
     static std::vector<std::pair<double, double>> sampling_points(size_t L) {
         std::vector<std::pair<double, double>> rv;
-        for(size_t theta = 0; theta <= ssht_sampling_dh_ntheta(L); ++theta) {
-            for(size_t phi = 0; phi <= ssht_sampling_dh_nphi(L); ++phi) {
+        for(int theta = 0; theta < ssht_sampling_dh_ntheta(L); ++theta) {
+            for(int phi = 0; phi < ssht_sampling_dh_nphi(L); ++phi) {
                 rv.push_back({ssht_sampling_dh_t2theta(theta, L), ssht_sampling_dh_p2phi(phi, L)});
             }
         }

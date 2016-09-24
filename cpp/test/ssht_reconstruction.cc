@@ -6,8 +6,6 @@
 
 #include <boost/filesystem.hpp>
 
-#include <matio.h>
-
 #include <dlm/l2.h>
 
 #include <ssht/transform.h>
