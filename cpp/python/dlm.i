@@ -11,6 +11,7 @@
 %include <std_complex.i>
 %include <std_pair.i>
 %include <std_vector.i>
+%include <std_except.i>
 
 %include <ssht/transform.h>
 
