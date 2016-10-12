@@ -1,0 +1,1 @@
+LOCAL_RESOURCE_DIR=r"C:\Users\Vladimir Anisimov\Desktop\nsht\resources"
